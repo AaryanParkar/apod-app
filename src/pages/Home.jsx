@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 const API_KEY = import.meta.env.VITE_NASA_API_KEY;
-console.log("NASA API KEY:", API_KEY);
 
 function Home() {
   const [apods, setApods] = useState([]);
@@ -34,7 +33,8 @@ function Home() {
       .then(async (res) => {
         if (!res.ok) {
           const errorData = await res.json().catch(() => ({}));
-          const message = errorData.error?.message || "Failed to fetch APOD data.";
+          const message =
+            errorData.error?.message || "Failed to fetch APOD data.";
           throw new Error(message);
         }
         return res.json();
@@ -83,13 +83,13 @@ function Home() {
           Select a date to explore 7 days of NASA Astronomy Pictures!
         </p>
 
-        <div className="flex items-center justify-center gap-4 mb-8">
-          <Input
+        <div className="relative w-[220px] mx-auto">
+          <input
             type="date"
             max={new Date().toISOString().split("T")[0]}
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-full max-w-xs"
+            className="w-full pl-4 pr-3 py-2 text-sm rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
           />
         </div>
 
@@ -101,7 +101,10 @@ function Home() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {apods.map((apod) => (
-            <Card key={apod.date} className="shadow-lg hover:scale-[1.02] transition">
+            <Card
+              key={apod.date}
+              className="shadow-lg hover:scale-[1.02] transition"
+            >
               <CardHeader>
                 <CardTitle className="text-lg">{apod.title}</CardTitle>
                 <p className="text-xs text-gray-500">{apod.date}</p>
@@ -126,6 +129,7 @@ function Home() {
                 </p>
 
                 <div className="flex flex-wrap gap-2 mt-3">
+                  {/* Favorite Button */}
                   <button
                     onClick={() => toggleFavorite(apod)}
                     className={`px-3 py-1 rounded-md text-sm font-medium ${
@@ -134,25 +138,47 @@ function Home() {
                         : "bg-gray-200 text-gray-800"
                     }`}
                   >
-                    {isFavorite(apod.date) ? "Remove Favorite" : "Add to Favorites"}
+                    {isFavorite(apod.date)
+                      ? "Remove Favorite"
+                      : "Add to Favorites"}
                   </button>
 
+                  {/* View Image Button (only for images) */}
                   {apod.media_type === "image" && (
                     <button
                       onClick={() => {
-                        const link = document.createElement("a");
-                        link.href = apod.url;
-                        link.download = `${apod.title || "apod"}.jpg`;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
+                        window.open(apod.url, "_blank");
                       }}
-                      className="px-3 py-1 bg-green-500 text-white rounded-md text-sm font-medium"
+                      className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm"
+                    >
+                      View
+                    </button>
+                  )}
+
+                  {/* Download Button (only for images) */}
+                  {apod.media_type === "image" && (
+                    <button
+                      onClick={async () => {
+                        try {
+                          const response = await fetch(apod.url);
+                          const blob = await response.blob();
+                          const url = URL.createObjectURL(blob);
+                          const link = document.createElement("a");
+                          link.href = url;
+                          link.download = `${apod.title || "apod"}.jpg`;
+                          link.click();
+                          URL.revokeObjectURL(url);
+                        } catch {
+                          alert("Download failed. Try View instead.");
+                        }
+                      }}
+                      className="px-3 py-1 bg-green-500 text-white rounded-md text-sm"
                     >
                       Download
                     </button>
                   )}
 
+                  {/* Share Button */}
                   <button
                     onClick={() => {
                       if (navigator.share) {
@@ -167,7 +193,7 @@ function Home() {
                         alert("Sharing not supported on this browser.");
                       }
                     }}
-                    className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm font-medium"
+                    className="px-3 py-1 bg-purple-500 text-white rounded-md text-sm"
                   >
                     Share
                   </button>
