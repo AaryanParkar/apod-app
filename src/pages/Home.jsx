@@ -1,10 +1,11 @@
+// src/pages/Home.jsx
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 const API_KEY = import.meta.env.VITE_NASA_API_KEY;
 
-function Home() {
+function Home({ darkMode }) {
   const [apods, setApods] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [error, setError] = useState("");
@@ -74,7 +75,11 @@ function Home() {
   const isFavorite = (date) => favorites.some((fav) => fav.date === date);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div
+      className={`min-h-screen p-4 ${
+        darkMode ? "bg-[#121212] text-white" : "bg-gray-100 text-black"
+      }`}
+    >
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-2">
           NASA APOD Viewer

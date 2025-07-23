@@ -37,14 +37,24 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // }
 
 function App() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Set body class on mode change
+  useEffect(() => {
+    document.body.className = darkMode ? "dark" : "light";
+  }, [darkMode]);
+
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/favourites" element={<Favourites />} />
-        {/* <Route path="/apitest" element={<APITest />} /> */}
-      </Routes>
+      <div className="App">
+        <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+        {/* Routes */}
+        <Routes>
+          <Route path="/" element={<Home darkMode={darkMode} />} />
+          <Route path="/favourites" element={<Favourites darkMode={darkMode} />} />
+          {/* <Route path="/apitest" element={<APITest />} /> */}
+        </Routes>
+      </div>
     </Router>
   );
 }

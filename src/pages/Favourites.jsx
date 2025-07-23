@@ -1,7 +1,8 @@
+// src/pages/Favourites.jsx
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-function Favourites() {
+function Favourites({ darkMode }) {
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
@@ -27,7 +28,11 @@ function Favourites() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div
+      className={`min-h-screen p-4 ${
+        darkMode ? "bg-[#121212] text-white" : "bg-gray-100 text-black"
+      }`}
+    >
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-6">
           My Favorite APODs
